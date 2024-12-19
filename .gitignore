@@ -1,6 +1,7 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 datasets/
+assets/
 *.ipynb/
 *Data/
 *.py[cod]
@@ -89,6 +90,7 @@ venv
 # vim
 *.swp
 *.swo
+*.pth 
 
 # Mypy cache
 .mypy_cache/
