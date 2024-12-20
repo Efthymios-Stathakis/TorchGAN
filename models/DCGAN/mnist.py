@@ -24,10 +24,10 @@ class Generator(nn.Module):
 
 class Discriminator(nn.Module):
 
-    def __init__(self, im_chan, hidden_dim=32):
+    def __init__(self, im_chan=1, hidden_dim=32):
         super().__init__()
         self.disc = nn.Sequential(
-            DiscConvBlock(im_chan, hidden_dim * 1),
+            DiscConvBlock(im_chan,        hidden_dim * 1),
             DiscConvBlock(hidden_dim * 1, hidden_dim * 2),
             DiscConvBlock(hidden_dim * 2, 1, final=True),
         )
