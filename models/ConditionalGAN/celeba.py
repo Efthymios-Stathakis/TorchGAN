@@ -26,7 +26,7 @@ class Generator(nn.Module):
         super().__init__()
         self.z_dim = z_dim
         self.gen = nn.Sequential(
-            GenConvTransposeBlock(z_dim,           hidden_dim * 8, kernel_size=4,  stride=1, padding = 0),
+            GenConvTransposeBlock(z_dim,           hidden_dim * 8, kernel_size=4, stride=1, padding = 0),
             GenConvTransposeBlock(hidden_dim * 8,  hidden_dim * 4, kernel_size=4, stride=2, padding = 1),
             GenConvTransposeBlock(hidden_dim * 4,  hidden_dim * 2, kernel_size=4, stride=2, padding = 1),
             GenConvTransposeBlock(hidden_dim * 2,  hidden_dim * 1, kernel_size=4, stride=2, padding = 1),
@@ -83,7 +83,7 @@ class Discriminator(nn.Module):
             DiscConvBlock(hidden_dim * 1, hidden_dim * 2, kernel_size=4, stride=2, padding=1),
             DiscConvBlock(hidden_dim * 2, hidden_dim * 2, kernel_size=4, stride=2, padding=1), 
             DiscConvBlock(hidden_dim * 2, hidden_dim * 2, kernel_size=4, stride=2, padding=1),
-            DiscConvBlock(hidden_dim * 2, 1, kernel_size=4, stride=1, final=True)
+            DiscConvBlock(hidden_dim * 2, 1,              kernel_size=4, stride=1, final=True)
         )
 
     def forward(self, x):
