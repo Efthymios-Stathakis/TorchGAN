@@ -11,7 +11,7 @@ lr=${5:-0.0002}
 beta_1=${6:-0.5}
 beta_2=${7:-0.999}
 model_type=${8:-ConditionalGAN} # DCGAN, ACGAN, ConditionalGAN, WGANGP
-dataset=${8:-mnist}
+dataset=${8:-celeba} # mnist, celeba
 
 python3 -m models.$model_type.train --n_epochs $n_epochs \
                                     --z_dim $z_dim \
