@@ -41,10 +41,10 @@ def train(n_epochs,
 
         # Initialize the generator and discriminator
         size = (1, 28, 28)
-        n_classes = 10
+        num_classes = 10
         
-        gen  = MnistGenerator(z_dim=z_dim+n_classes  , hidden_dim=hidden_dim).to(device)
-        disc = MnistDiscriminator(im_chan=1+n_classes, hidden_dim=hidden_dim).to(device)
+        gen  = MnistGenerator(z_dim=z_dim+num_classes  , hidden_dim=hidden_dim).to(device)
+        disc = MnistDiscriminator(im_chan=1+num_classes, hidden_dim=hidden_dim).to(device)
         
 
     elif dataset == "celeba":
@@ -57,10 +57,10 @@ def train(n_epochs,
         
         # Initialize the generator and discriminator
         size = (3, 64, 64)
-        n_classes = 40
+        num_classes = 40
 
-        gen  = CelebaGenerator(z_dim=z_dim+n_classes  , im_chan=3, hidden_dim=hidden_dim).to(device)
-        disc = CelebaDiscriminator(im_chan=3+n_classes, hidden_dim=hidden_dim).to(device)
+        gen  = CelebaGenerator(z_dim=z_dim+num_classes  , im_chan=3, hidden_dim=hidden_dim).to(device)
+        disc = CelebaDiscriminator(im_chan=3+num_classes, hidden_dim=hidden_dim).to(device)
         
     
     # Initialize the optimizers for generator and discriminator
@@ -84,8 +84,8 @@ def train(n_epochs,
             ## Update discriminator ##
             disc_opt.zero_grad()
                     
-            one_hot_vec = tf.one_hot(labels.to(device), num_classes=10) # Num_classes 
-            one_hot_img = one_hot_vec[:,:,None,None].expand(-1, -1, 28, 28) # 28, 28
+            one_hot_vec = tf.one_hot(labels.to(device), num_classes=num_classes) # Num_classes 
+            one_hot_img = one_hot_vec[:,:,None,None].expand(-1, -1, *size[1:]) # (28, 28) for mnist, (64, 64) for Celeba
 
             # Get noise corresponding to the current batch_size
             noise = get_noise(cur_batch_size, z_dim, device=device)
@@ -148,13 +148,16 @@ if __name__ == "__main__":
     parser.add_argument('--beta_1',       type=float, default=0.5,     help='Beta 1 for Adam optimizer')
     parser.add_argument('--beta_2',       type=float, default=0.999,   help='Beta 2 for Adam optimizer')
     parser.add_argument('--dataset',      type=str ,  default="mnist", help='Dataset to load')
-    parser.add_argument('--display_step', type=int ,  default=5000,    help='Dataset to load')
+    parser.add_argument('--display_step', type=int ,  default=5000,    help='How often to get real and fake samples')
 
     args = parser.parse_args()
     
     device = "mps" if torch.backends.mps.is_available() else "cpu"    
+    if torch.cuda.is_available(): device = "cuda"
 
-    logging.info(f"Executing {os.path.join(os.path.dirname(__file__))} running on {device}")
+    cur_file = os.path.join(os.path.dirname(__file__))
+    model = cur_file.split("/")[-1]
+    logging.info(f"Training a {model} for the {args.dataset} dataset, on {device}.")
 
     # Call the train function
     train(
