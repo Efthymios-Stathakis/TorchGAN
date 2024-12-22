@@ -1,4 +1,6 @@
-import os, sys, torch
+import os
+import pandas as pd
+import torch
 from torch import nn
 import torch.nn.functional as tf
 from torchvision.datasets import MNIST
@@ -14,7 +16,8 @@ from ..utils import get_noise, weights_init, combine_tensors
 from .mnist import (Generator as MnistGenerator, 
                     Discriminator as MnistDiscriminator)
 from .celeba import (Generator as CelebaGenerator, 
-                    Discriminator as CelebaDiscriminator)
+                    Discriminator as CelebaDiscriminator,
+                    CelebADataset)
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -49,10 +52,17 @@ def train(n_epochs,
 
     elif dataset == "celeba":
         
+        # Read labels
+        df_labels = pd.read_csv(f"{data_path}/celeba_align/list_attr_celeba.csv", 
+                         delim_whitespace=True, index_col=0)
+        df_labels = df_labels.replace(-1, 0)
+
         celeba_transforms = transforms.Compose([transforms.ToTensor(),
                                          transforms.CenterCrop((178, 178)),
                                          transforms.Resize((64, 64))])
-        torch_dt = ImageFolder(f"{data_path}/celeba", transform=celeba_transforms)
+
+        celeba = ImageFolder(f"{data_path}/celeba", transform=celeba_transforms)
+        torch_dt = CelebADataset(celeba, df_labels)
         torch_dl = DataLoader(torch_dt, batch_size=batch_size, shuffle=True)
         
         # Initialize the generator and discriminator
@@ -83,8 +93,11 @@ def train(n_epochs,
 
             ## Update discriminator ##
             disc_opt.zero_grad()
-                    
-            one_hot_vec = tf.one_hot(labels.to(device), num_classes=num_classes) # Num_classes 
+
+            if dataset == "mnist":
+                one_hot_vec = tf.one_hot(labels.to(device), num_classes=num_classes) # Num_classes 
+            elif dataset == "celeba":
+                one_hot_vec = labels.float().to(device)
             one_hot_img = one_hot_vec[:,:,None,None].expand(-1, -1, *size[1:]) # (28, 28) for mnist, (64, 64) for Celeba
 
             # Get noise corresponding to the current batch_size
