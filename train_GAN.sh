@@ -12,7 +12,7 @@ beta_1=${6:-0.5}
 beta_2=${7:-0.999}
 model_type=${8:-ConditionalGAN} # DCGAN, ACGAN, ConditionalGAN, WGANGP
 dataset=${8:-celeba} # mnist, celeba
-display_step=${8:-2500} # mnist, celeba
+display_step=${8:-50} # mnist, celeba
 
 python3 -m models.$model_type.train --n_epochs $n_epochs \
                                     --z_dim $z_dim \
@@ -21,5 +21,5 @@ python3 -m models.$model_type.train --n_epochs $n_epochs \
                                     --lr $lr \
                                     --beta_1 $beta_1 \
                                     --beta_2 $beta_2 \
-                                    --dataset $dataset\
+                                    --dataset $dataset \
                                     --display_step $display_step

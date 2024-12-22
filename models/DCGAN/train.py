@@ -138,13 +138,16 @@ if __name__ == "__main__":
     parser.add_argument('--beta_1',       type=float, default=0.5,     help='Beta 1 for Adam optimizer')
     parser.add_argument('--beta_2',       type=float, default=0.999,   help='Beta 2 for Adam optimizer')
     parser.add_argument('--dataset',      type=str ,  default="mnist", help='Dataset to load')
-    parser.add_argument('--display_step', type=int ,  default=5000,    help='Dataset to load')
+    parser.add_argument('--display_step', type=int ,  default=5000,    help='How often to get real and fake samples')
 
     args = parser.parse_args()
     
-    device = "mps" if torch.backends.mps.is_available() else "cpu"
-    
-    logging.info(f"Executing {os.path.join(os.path.dirname(__file__))} on {device}")
+    device = "mps" if torch.backends.mps.is_available() else "cpu"    
+    if torch.cuda.is_available(): device = "cuda"
+
+    cur_file = os.path.join(os.path.dirname(__file__))
+    model = cur_file.split("/")[-1]
+    logging.info(f"Training a {model} for the {args.dataset} dataset, on {device}.")
 
     # Call the train function
     train(
@@ -152,10 +155,11 @@ if __name__ == "__main__":
         z_dim=args.z_dim,
         hidden_dim=args.hidden_dim,
         batch_size=args.batch_size,
+        display_step=args.display_step,
         device=device, 
         dataset=args.dataset,
         opt_params= {
             "lr": args.lr, 
             "betas": (args.beta_1, args.beta_2)
-            }    
+            }
     )

@@ -165,6 +165,7 @@ if __name__ == "__main__":
         z_dim=args.z_dim,
         hidden_dim=args.hidden_dim,
         batch_size=args.batch_size,
+        display_step=args.display_step,
         device=device, 
         dataset=args.dataset,
         opt_params= {
