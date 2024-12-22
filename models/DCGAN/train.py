@@ -144,6 +144,8 @@ if __name__ == "__main__":
     
     device = "mps" if torch.backends.mps.is_available() else "cpu"
     
+    logging.info(f"Executing {os.path.join(os.path.dirname(__file__))} on {device}")
+
     # Call the train function
     train(
         n_epochs=args.n_epochs, 
