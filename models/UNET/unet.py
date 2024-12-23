@@ -118,6 +118,8 @@ class ExpandingBlock(nn.Module):
         """
         x = combine_tensors(x, crop(crop_con, x.shape[2:]))
         return self.exp_block(x)
+    
+
 class UNet(nn.Module):
     """
     A U-Net model for image segmentation tasks.
