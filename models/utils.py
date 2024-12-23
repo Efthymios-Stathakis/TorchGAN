@@ -1,4 +1,5 @@
 import torch
+from torchvision import transforms
 from torch import nn
 
 def get_noise(n_samples, z_dim, device):
@@ -44,3 +45,18 @@ def weights_init(m):
     if isinstance(m, nn.BatchNorm2d):
         torch.nn.init.normal_(m.weight, 0.0, 0.02)
         torch.nn.init.constant_(m.bias, 0)
+
+
+# UNQ_C2 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)
+# GRADED FUNCTION: crop
+def crop(image, new_shape):
+    '''
+    Function for cropping an image tensor: Given an image tensor and the new shape,
+    crops to the center pixels (assumes that the input's size and the new size are
+    even numbers).
+    Parameters:
+        image: image tensor of shape (batch size, channels, height, width)
+        new_shape: a torch.Size object with the shape you want x to have
+    '''
+
+    return transforms.CenterCrop(new_shape)(image)
