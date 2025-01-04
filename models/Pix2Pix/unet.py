@@ -216,6 +216,8 @@ class UNet(nn.Module):
         Returns:
             torch.Tensor: The output tensor after passing through the UNet.
         """
+
+        # Contracting network
         cb1  = self.contracting_block1(x)
         cb1_ = nn.MaxPool2d(kernel_size=2, stride=2)(cb1)
         cb2  = self.contracting_block2(cb1_)
@@ -228,7 +230,7 @@ class UNet(nn.Module):
         cb5_ = nn.MaxPool2d(kernel_size=2, stride=2)(cb5)
         cb6 = self.contracting_block6(cb5_)
         
-        # Expanding block
+        # Expanding network
         eb6_ = self.upsampling_block5(cb6)
         eb5  = self.expanding_block5(eb6_, cb5)
         eb5_ = self.upsampling_block4(eb5)
